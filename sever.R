@@ -12,7 +12,7 @@ get_weather_info <- function(lat, lon) {
   json <- fromJSON(complete_url)
   
   if (is.null(json$name)) {
-    return(NULL)  # Trả về NULL nếu không tìm thấy thông tin
+    return(NULL)  
   }
   
   location <- json$name
@@ -34,6 +34,21 @@ get_weather_info <- function(lat, lon) {
   )
 }
 
+# Function to select the appropriate weather image
+get_weather_image <- function(condition) {
+  if (grepl("cloud", condition)) {
+    return("clouds.jpg")
+  } else if (grepl("clear", condition)) {
+    return("clear.jpg")
+  } else if (grepl("rain", condition)) {
+    return("rain.jpg")
+  } else if (grepl("snow", condition)) {
+    return("snow.jpg")
+  } else {
+    return("default.jpg")  
+  }
+}
+
 get_forecast <- function(lat, lon) {
   api_key <- "d076ef1cee22c7c2a00ad9afcf232eb5"
   API_call <- "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&appid=%s"
@@ -41,7 +56,7 @@ get_forecast <- function(lat, lon) {
   json <- fromJSON(complete_url)
   
   if (is.null(json$list)) {
-    return(NULL)  # Trả về NULL nếu không có dữ liệu dự báo
+    return(NULL)  
   }
   
   df <- data.frame(
@@ -63,7 +78,7 @@ get_forecast <- function(lat, lon) {
     speed = json$list$wind$speed,
     deg = json$list$wind$deg,
     gust = json$list$wind$gust,
-    stringsAsFactors = FALSE  # Tránh vấn đề với các chuỗi ký tự
+    stringsAsFactors = FALSE 
   )
   
   return(df)
@@ -85,7 +100,7 @@ server <- function(input, output, session) {
     weather_info <<- get_weather_info(click$lat, click$lng)
     
     if (is.null(weather_info)) {
-      return()  # Dừng nếu không có thông tin thời tiết
+      return()  
     }
     
     output$location <- renderText({ weather_info$Location })
@@ -95,6 +110,11 @@ server <- function(input, output, session) {
     output$weather_condition <- renderText({ weather_info$WeatherCondition })
     output$visibility <- renderText({ weather_info$Visibility })
     output$wind_speed <- renderText({ weather_info$Wind_speed })
+    
+   
+    output$weather_image <- renderUI({
+      img(src = get_weather_image(weather_info$WeatherCondition), height = "200px", width = "300px")
+    })
   })
   
   observeEvent(input$feature, {
@@ -110,14 +130,14 @@ server <- function(input, output, session) {
     }
     
     if (is.null(data)) {
-      output$line_chart <- renderText({"Không có dữ liệu dự báo."})
+      output$line_chart <- renderText({"Nothing!!"})
       return()
     }
     
     output$line_chart <- renderPlotly({
       feature_data <- data[, c("Time", input$feature)]
       if (!all(c("Time", input$feature) %in% colnames(data))) {
-        return(NULL)  # Dừng nếu không có cột
+        return(NULL)  
       }
       
       plot_ly(data = feature_data, x = ~Time, y = ~.data[[input$feature]], 
