@@ -97,21 +97,20 @@ server <- function(input, output, session) {
   
   observeEvent(input$map_click, {
     click <<- input$map_click
-    weather_info <<- get_weather_info(click$lat, click$lng)
+    weather_info <<- get_weather_info(clicklat,clicklat, clicklng)
     
     if (is.null(weather_info)) {
       return()  
     }
     
-    output$location <- renderText({ weather_info$Location })
-    output$humidity <- renderText({ paste(weather_info$Humidity, "%") })
-    output$temperature <- renderText({ paste(weather_info$Temperature, "°C") })
-    output$feels_like <- renderText({ paste(weather_info$Feels_like, "°C") })
-    output$weather_condition <- renderText({ weather_info$WeatherCondition })
-    output$visibility <- renderText({ weather_info$Visibility })
-    output$wind_speed <- renderText({ weather_info$Wind_speed })
+    outputlocation <- renderText({ weather_infolocation <- renderText({ weather_infoLocation })
+    outputhumidity <- renderText({ paste(weather_infohumidity <- renderText({ paste(weather_infoHumidity, "%") })
+    outputtemperature <- renderText({ paste(weather_infotemperature <- renderText({ paste(weather_infoTemperature, "°C") })
+    outputfeels_like <- renderText({ paste(weather_infofeels_like <- renderText({ paste(weather_infoFeels_like, "°C") })
+    outputweather_condition <- renderText({ weather_infoweather_condition <- renderText({ weather_infoWeatherCondition })
+    outputvisibility <- renderText({ weather_infovisibility <- renderText({ weather_infoVisibility })
+    outputwind_speed <- renderText({ weather_infowind_speed <- renderText({ weather_infoWind_speed })
     
-   
     output$weather_image <- renderUI({
       img(src = get_weather_image(weather_info$WeatherCondition), height = "200px", width = "300px")
     })
@@ -126,7 +125,7 @@ server <- function(input, output, session) {
     data <- get_forecast(default_lat, default_lon)
     
     if (!is.null(click)) {
-      data <- get_forecast(click$lat, click$lng)
+      data <- get_forecast(clicklat,clicklat, clicklng)
     }
     
     if (is.null(data)) {
@@ -146,6 +145,3 @@ server <- function(input, output, session) {
     })
   })
 }
-
-# Run the application 
-shinyApp(ui = ui, server = server)
