@@ -44,7 +44,7 @@ ui <- dashboardPage(
                     h3(textOutput("pressure")),
                     tags$hr(),
                     # Thêm hình ảnh thời tiết
-                    img(src = "weather_image.jpg", height = "200px", width = "300px")  # Đảm bảo đường dẫn đúng với tệp hình ảnh
+                    img(src = "weather_image.jpg", height = "200px", width = "300px")
                 ),
                 box(width = 12, title = "Map", leafletOutput("map"), class = 'map-container')
               )
