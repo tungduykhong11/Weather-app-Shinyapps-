@@ -16,12 +16,12 @@ get_weather_info <- function(lat, lon) {
   }
   
   location <- json$name
-  temp <- json$main$temp - 273.2
-  feels_like <- json$main$feels_like - 273.2
-  humidity <- json$main$humidity
-  weather_condition <- json$weather$description
+  temp <- jsonmainmaintemp - 273.2
+  feels_like <- jsonmainmainfeels_like - 273.2
+  humidity <- jsonmainmainhumidity
+  weather_condition <- jsonweatherweatherdescription
   visibility <- json$visibility
-  wind_speed <- json$wind$speed
+  wind_speed <- jsonwindwindspeed
   
   list(
     Location = location,
@@ -60,8 +60,8 @@ get_forecast <- function(lat, lon) {
   }
   
   df <- data.frame(
-    Time = json$list$dt_txt,
-    Location = json$city$name,
+    Time = jsonlistlistdt_txt,
+    Location = jsoncitycityname,
     feels_like = json$list$main$feels_like - 273.2,
     temp_min = json$list$main$temp_min - 273.2,
     temp_max = json$list$main$temp_max - 273.2,
